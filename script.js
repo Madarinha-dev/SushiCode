@@ -101,6 +101,10 @@ if (savedCart) {
 }
 let toastTimer;
 
+function saveCart() {
+    localStorage.setItem("cart", JSON.stringify(cart));
+}
+
 function formatBRL(value) {
     return value.toLocaleString("pt-BR", {
         style: "currency",
@@ -177,7 +181,6 @@ function renderCart() {
         </article>
     `).join("");
 }
-localStorage.setItem("cart", JSON.stringify(cart));
 
 function showToast(message) {
     toast.textContent = message;
@@ -235,7 +238,7 @@ function addToCart(product) {
 
     renderCart();
 
-    localStorage.setItem("cart", JSON.stringify(cart));
+    saveCart();
 
     openCart();
 
@@ -255,11 +258,13 @@ function changeQuantity(id, direction) {
     }
 
     renderCart();
+    saveCart();
 }
 
 function removeItem(id) {
     cart = cart.filter((item) => item.id !== id);
     renderCart();
+    saveCart(); 
 }
 
 function updateDeliveryFields() {
@@ -349,12 +354,14 @@ checkoutForm.addEventListener("submit", (event) => {
 
     const formData = new FormData(checkoutForm);
     const customerName = formData.get("name");
+    const orderNumber = Math.floor(Math.random() * 10000);
 
     cart = [];
     renderCart();
+    saveCart();
     checkoutForm.reset();
     updateDeliveryFields();
     closeCheckoutModal();
     closeCartDrawer();
-    showToast(`Pedido enviado, ${customerName}. Obrigado pelo deploy!`);
+    showToast(`Pedido #${orderNumber} enviado, ${customerName}!`);
 });
