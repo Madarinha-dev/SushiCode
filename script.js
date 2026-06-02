@@ -4,56 +4,72 @@ const dishes = [
         name: "Sashimi Syntax",
         desc: "Fatias de salmao fresco com finalizacao leve.",
         price: 52,
-        type: "sashimi"
+        type: "sashimi",
+        image: "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?auto=format&fit=crop&w=900&q=80",
+        imageAlt: "Fatias de sashimi de salmao servidas em prato escuro"
     },
     {
         id: "uramaki-loop",
         name: "Uramaki Loop",
         desc: "Salmao, cream cheese e cebolinha.",
         price: 38,
-        type: "roll"
+        type: "roll",
+        image: "https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=900&q=80",
+        imageAlt: "Uramakis de salmao com acabamento delicado"
     },
     {
         id: "temaki-script",
         name: "Temaki Script",
         desc: "Cone crocante com salmao e molho especial.",
         price: 29,
-        type: "temaki"
+        type: "temaki",
+        image: "https://images.unsplash.com/photo-1611143669185-af224c5e3252?auto=format&fit=crop&w=900&q=80",
+        imageAlt: "Temaki de salmao fresco servido com molho"
     },
     {
         id: "hot-roll-debug",
         name: "Hot Roll Debug",
         desc: "Empanado sequinho com toque de tare.",
         price: 34,
-        type: "roll"
+        type: "roll",
+        image: "https://images.unsplash.com/photo-1607301406259-dfb186e15de8?auto=format&fit=crop&w=900&q=80",
+        imageAlt: "Hot roll crocante com molho tare"
     },
     {
         id: "nigiri-commit",
         name: "Nigiri Commit",
         desc: "Dupla de nigiri com salmao selado.",
         price: 22,
-        type: "sashimi"
+        type: "sashimi",
+        image: "https://images.unsplash.com/photo-1534256958597-7fe685cbd745?auto=format&fit=crop&w=900&q=80",
+        imageAlt: "Nigiris de salmao alinhados em prato japones"
     },
     {
         id: "hossomaki-bit",
         name: "Hossomaki Bit",
         desc: "Alga nori, arroz japones e recheio de salmao.",
         price: 24,
-        type: "roll"
+        type: "roll",
+        image: "https://images.unsplash.com/photo-1563612116625-3012372fccce?auto=format&fit=crop&w=900&q=80",
+        imageAlt: "Hossomakis com alga nori e recheio de peixe"
     },
     {
         id: "joy-function",
         name: "Joy Function",
         desc: "Bolinho de arroz com salmao e cream cheese.",
         price: 31,
-        type: "roll"
+        type: "roll",
+        image: "https://images.unsplash.com/photo-1582450871972-ab5ca641643d?auto=format&fit=crop&w=900&q=80",
+        imageAlt: "Joys de salmao com cream cheese finalizados"
     },
     {
         id: "combo-pull-request",
         name: "Combo Pull Request",
         desc: "12 pecas variadas para revisar com calma.",
         price: 66,
-        type: "roll"
+        type: "roll",
+        image: "https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=900&q=80",
+        imageAlt: "Combinado variado de sushi em prato premium"
     }
 ];
 
@@ -89,7 +105,6 @@ const checkoutForm = document.querySelector("#checkoutForm");
 const checkoutTotal = document.querySelector("#checkoutTotal");
 const deliveryType = document.querySelector("#deliveryType");
 const addressField = document.querySelector("#addressField");
-const toast = document.querySelector("#toast");
 const navLinks = document.querySelector("#navLinks");
 const menuToggle = document.querySelector("#menuToggle");
 let cart = [];
@@ -99,7 +114,6 @@ const savedCart = localStorage.getItem("cart");
 if (savedCart) {
     cart = JSON.parse(savedCart);
 }
-let toastTimer;
 
 function formatBRL(value) {
     return value.toLocaleString("pt-BR", {
@@ -124,6 +138,7 @@ function renderMenu() {
     menuGrid.innerHTML = dishes.map((dish, index) => `
         <article class="menu-card">
             <div class="dish-art ${dish.type}">
+                <img src="${dish.image}" alt="${dish.imageAlt}" loading="lazy">
                 <button class="favorite" type="button" aria-label="Favoritar ${dish.name}">
                     ${icons.heart}
                 </button>
@@ -179,11 +194,27 @@ function renderCart() {
 }
 localStorage.setItem("cart", JSON.stringify(cart));
 
-function showToast(message) {
-    toast.textContent = message;
-    toast.classList.add("show");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+function showAlert(message, icon = "success", title = "SushiCode") {
+    if (!window.Swal) {
+        window.alert(message);
+        return;
+    }
+
+    Swal.fire({
+        title,
+        text: message,
+        icon,
+        timer: icon === "success" ? 1900 : undefined,
+        showConfirmButton: icon !== "success",
+        confirmButtonText: "Entendi",
+        customClass: {
+            popup: "sushi-alert",
+            title: "sushi-alert-title",
+            htmlContainer: "sushi-alert-text",
+            confirmButton: "sushi-alert-button"
+        },
+        buttonsStyling: false
+    });
 }
 
 function openCart() {
@@ -206,7 +237,7 @@ function closeCartDrawer() {
 
 function openCheckout() {
     if (cart.length === 0) {
-        showToast("Adicione um item antes de finalizar.");
+        showAlert("Adicione um item antes de finalizar.", "warning", "Carrinho vazio");
         return;
     }
 
@@ -239,7 +270,7 @@ function addToCart(product) {
 
     openCart();
 
-    showToast(`${product.name} adicionado ao carrinho.`);
+    showAlert(`${product.name} adicionado ao carrinho.`, "success", "Item adicionado");
 }
 function changeQuantity(id, direction) {
     const item = cart.find((cartItem) => cartItem.id === id);
@@ -341,7 +372,7 @@ document.addEventListener("keydown", (event) => {
 document.querySelector("#newsletterForm").addEventListener("submit", (event) => {
     event.preventDefault();
     event.currentTarget.reset();
-    showToast("Cadastro recebido. Ate o proximo deploy!");
+    showAlert("Cadastro recebido. Ate o proximo deploy!", "success", "Novidades a caminho");
 });
 
 checkoutForm.addEventListener("submit", (event) => {
@@ -356,5 +387,5 @@ checkoutForm.addEventListener("submit", (event) => {
     updateDeliveryFields();
     closeCheckoutModal();
     closeCartDrawer();
-    showToast(`Pedido enviado, ${customerName}. Obrigado pelo deploy!`);
+    showAlert(`Pedido enviado, ${customerName}. Obrigado pelo deploy!`, "success", "Pedido confirmado");
 });

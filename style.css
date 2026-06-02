@@ -8,9 +8,9 @@
     --muted-dark: #6f665e;
     --line: rgba(255, 250, 241, 0.12);
     --line-dark: rgba(10, 10, 10, 0.1);
-    --red: #c0392b;
-    --red-dark: #8f2118;
-    --red-bright: #e14b38;
+    --red: #e21f17;
+    --red-dark: #a91510;
+    --red-bright: #ff3b30;
     --gold: #c8a45d;
     --gold-soft: rgba(200, 164, 93, 0.2);
     --green: #173c32;
@@ -91,7 +91,21 @@ button {
 
 .page-shell {
     position: relative;
+    z-index: 0;
+    isolation: isolate;
     overflow: hidden;
+}
+
+main,
+footer {
+    position: relative;
+    z-index: 1;
+}
+
+.cart-drawer,
+.checkout-modal {
+    position: relative;
+    z-index: 1;
 }
 
 .page-shell::before {
@@ -106,6 +120,33 @@ button {
     background-size: 84px 84px;
     -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent 72%);
     mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent 72%);
+}
+
+.page-shell::after {
+    position: fixed;
+    inset: -12% -22%;
+    z-index: 0;
+    content: "";
+    pointer-events: none;
+    opacity: 0.08;
+    background-image: url("data:image/svg+xml,%3Csvg width='280' height='150' viewBox='0 0 280 150' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fffaf1' fill-opacity='0.42'%3E%3Cpath d='M72 74c22-20 50-20 72 0-22 20-50 20-72 0Z'/%3E%3Cpath d='M145 74l26-18v36Z'/%3E%3Ccircle cx='88' cy='70' r='3' fill='%230a0a0a' fill-opacity='0.42'/%3E%3Cpath d='M32 32c15-12 34-12 49 0-15 12-34 12-49 0Z'/%3E%3Cpath d='M82 32l17-11v22Z'/%3E%3Cpath d='M188 116c18-15 40-15 58 0-18 15-40 15-58 0Z'/%3E%3Cpath d='M246 116l20-13v26Z'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 360px 190px;
+    filter: blur(1px);
+    mix-blend-mode: screen;
+    animation: fishDrift 54s linear infinite;
+    transform: translate3d(0, 0, 0);
+}
+
+.topbar {
+    z-index: 20;
+}
+
+.cart-drawer {
+    z-index: 40;
+}
+
+.checkout-modal {
+    z-index: 45;
 }
 
 .container {
@@ -529,17 +570,19 @@ h2 {
 
 .plate {
     position: absolute;
-    right: -8px;
-    bottom: 8px;
+    right: 0;
+    bottom: 28px;
     display: grid;
     place-items: center;
-    width: min(92vw, 560px);
-    aspect-ratio: 1;
+    width: min(92vw, 600px);
+    aspect-ratio: 1.28;
     background:
-        radial-gradient(circle at 50% 45%, #fffaf1 0 43%, #e3d8c9 44% 46%, #fff7ea 47% 60%, #c8a45d 60.5% 61.5%, #f8efe1 62% 68%, rgba(255, 250, 241, 0.1) 69%),
-        radial-gradient(circle, rgba(255, 250, 241, 0.94), rgba(255, 250, 241, 0.2));
+        radial-gradient(circle at 50% 45%, rgba(255, 250, 241, 0.08), transparent 36%),
+        linear-gradient(180deg, rgba(10, 10, 10, 0.08), rgba(10, 10, 10, 0.58)),
+        url("https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=contain&w=1200&q=85") center / contain no-repeat,
+        linear-gradient(135deg, #14100f, #090909);
     border: 1px solid rgba(255, 250, 241, 0.16);
-    border-radius: 50%;
+    border-radius: var(--radius);
     box-shadow:
         0 45px 95px rgba(0, 0, 0, 0.5),
         0 0 70px rgba(192, 57, 43, 0.18);
@@ -547,21 +590,27 @@ h2 {
 
 .plate::before {
     position: absolute;
-    inset: 13%;
+    inset: 0;
     content: "";
-    border: 1px solid rgba(10, 10, 10, 0.08);
-    border-radius: 50%;
+    border: 1px solid rgba(200, 164, 93, 0.22);
+    border-radius: inherit;
+    box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.4);
 }
 
 .plate::after {
     position: absolute;
-    right: 15%;
-    bottom: 16%;
-    width: 32%;
-    height: 15%;
+    right: 8%;
+    bottom: -12%;
+    width: 70%;
+    height: 18%;
     content: "";
-    background: radial-gradient(ellipse, rgba(0, 0, 0, 0.22), transparent 68%);
-    filter: blur(2px);
+    background: radial-gradient(ellipse, rgba(0, 0, 0, 0.42), transparent 70%);
+    filter: blur(4px);
+}
+
+.plate .sushi-board,
+.plate .nigiri {
+    display: none;
 }
 
 .sushi-board {
@@ -697,21 +746,50 @@ section {
     position: relative;
     display: grid;
     place-items: center;
-    height: 190px;
+    height: 215px;
     overflow: hidden;
     background:
-        radial-gradient(circle at 50% 56%, rgba(255, 250, 241, 0.98) 0 25%, rgba(226, 214, 196, 0.96) 26% 27%, rgba(255, 250, 241, 0.94) 28% 42%, transparent 43%),
-        linear-gradient(135deg, rgba(192, 57, 43, 0.22), rgba(200, 164, 93, 0.08)),
-        #211918;
+        radial-gradient(ellipse at 50% 70%, rgba(255, 250, 241, 0.1), transparent 42%),
+        linear-gradient(135deg, rgba(226, 31, 23, 0.2), rgba(200, 164, 93, 0.08)),
+        #151110;
+}
+
+.dish-art::before {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    content: "";
+    background:
+        linear-gradient(180deg, rgba(10, 10, 10, 0.04), rgba(10, 10, 10, 0.28)),
+        radial-gradient(circle at 50% 24%, transparent 0 58%, rgba(10, 10, 10, 0.24) 100%);
+    pointer-events: none;
 }
 
 .dish-art::after {
     position: absolute;
     inset: auto 18px 16px;
+    z-index: 1;
     height: 28px;
     content: "";
     background: radial-gradient(ellipse, rgba(0, 0, 0, 0.34), transparent 70%);
     filter: blur(2px);
+}
+
+.dish-art img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: saturate(1.06) contrast(1.03);
+    transform: scale(1.01);
+    transition: transform 0.45s ease, filter 0.45s ease;
+}
+
+.menu-card:hover .dish-art img {
+    filter: saturate(1.14) contrast(1.06);
+    transform: scale(1.07);
 }
 
 .dish-art .mini-rolls {
@@ -721,6 +799,10 @@ section {
     grid-template-columns: repeat(2, 38px);
     gap: 8px;
     transform: rotate(-8deg);
+}
+
+.dish-art img ~ .mini-rolls {
+    display: none;
 }
 
 .mini-rolls i {
@@ -1137,28 +1219,62 @@ footer {
     border-top: 1px solid rgba(255, 250, 241, 0.1);
 }
 
-.toast {
-    position: fixed;
-    right: 22px;
-    bottom: 22px;
-    z-index: 30;
-    min-width: 250px;
-    padding: 14px 16px;
-    color: var(--white);
-    background: rgba(10, 10, 10, 0.92);
-    border: 1px solid rgba(200, 164, 93, 0.22);
-    border-radius: var(--radius);
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3);
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(24px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    backdrop-filter: blur(12px);
+.swal2-container {
+    z-index: 80;
 }
 
-.toast.show {
-    opacity: 1;
-    transform: translateY(0);
+.sushi-alert {
+    width: min(420px, calc(100vw - 32px));
+    color: var(--white);
+    background:
+        linear-gradient(145deg, rgba(24, 18, 16, 0.98), rgba(9, 9, 9, 0.98));
+    border: 1px solid rgba(200, 164, 93, 0.28);
+    border-radius: var(--radius);
+    box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55);
+}
+
+.sushi-alert-title {
+    color: var(--white);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 28px;
+    letter-spacing: 0;
+}
+
+.sushi-alert-text {
+    color: var(--muted);
+    font-size: 16px;
+}
+
+.sushi-alert-button {
+    min-height: 44px;
+    padding: 0 22px;
+    color: var(--white);
+    background: linear-gradient(135deg, var(--red), var(--red-dark));
+    border: 0;
+    border-radius: 999px;
+    box-shadow: 0 14px 28px rgba(226, 31, 23, 0.26);
+    cursor: pointer;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.swal2-icon.swal2-success {
+    border-color: rgba(200, 164, 93, 0.7);
+    color: var(--gold);
+}
+
+.swal2-icon.swal2-success [class^="swal2-success-line"] {
+    background-color: var(--gold);
+}
+
+.swal2-icon.swal2-success .swal2-success-ring {
+    border-color: rgba(200, 164, 93, 0.34);
+}
+
+.swal2-icon.swal2-warning {
+    border-color: var(--red-bright);
+    color: var(--red-bright);
 }
 
 body.no-scroll {
@@ -1470,6 +1586,40 @@ body.no-scroll {
     background: rgba(255, 250, 241, 0.055);
     border: 1px solid rgba(255, 250, 241, 0.1);
     border-radius: var(--radius);
+}
+
+@keyframes fishDrift {
+    0% {
+        background-position: 0 0;
+        transform: translate3d(0, 0, 0);
+    }
+
+    50% {
+        transform: translate3d(3%, -1%, 0);
+    }
+
+    100% {
+        background-position: 720px 190px;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    .page-shell::after {
+        animation: none;
+    }
+
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
 }
 
 @media (max-width: 1060px) {
