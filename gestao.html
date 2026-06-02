@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SushiCode | Gestão do restaurante</title>
+    <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="page-shell">
+        <header class="topbar">
+            <nav class="nav container" aria-label="Navegacao principal">
+                <a class="brand" href="index.html" aria-label="SushiCode inicio">
+                    <span class="brand-mark">&lt;/&gt;</span>
+                    <span>Sushi<em>Code</em></span>
+                </a>
+
+                <div class="nav-links" id="navLinks">
+                    <a href="index.html#cardapio">Cardapio</a>
+                    <a href="index.html#combo">Combo</a>
+                    <a href="gestao.html" aria-current="page">Gestão</a>
+                    <a href="index.html#sobre">Sobre</a>
+                    <a href="index.html#contato">Contato</a>
+                </div>
+
+                <div class="nav-actions">
+                    <a class="icon-button" href="index.html" aria-label="Voltar para landing page">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"></path><path d="m12 19-7-7 7-7"></path></svg>
+                    </a>
+                    <button class="icon-button menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path></svg>
+                    </button>
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <section id="gestao" class="management-section management-page">
+                <div class="container">
+                    <div class="section-head">
+                        <div>
+                            <span class="section-kicker">admin.restaurante()</span>
+                            <h1 class="page-title">Gestão do restaurante</h1>
+                        </div>
+                        <p>Painel operacional para acompanhar pedidos, controlar mesas, ajustar estoque e registrar reservas do SushiCode.</p>
+                    </div>
+
+                    <div class="management-grid">
+                        <article class="manager-card metric-card">
+                            <span>Faturamento hoje</span>
+                            <strong id="metricRevenue">R$ 0,00</strong>
+                            <small>Pedidos confirmados no checkout</small>
+                        </article>
+                        <article class="manager-card metric-card">
+                            <span>Pedidos ativos</span>
+                            <strong id="metricActiveOrders">0</strong>
+                            <small>Fila, preparo ou entrega</small>
+                        </article>
+                        <article class="manager-card metric-card">
+                            <span>Mesas ocupadas</span>
+                            <strong id="metricBusyTables">0/8</strong>
+                            <small>Status do salao em tempo real</small>
+                        </article>
+                        <article class="manager-card metric-card">
+                            <span>Estoque critico</span>
+                            <strong id="metricLowStock">0</strong>
+                            <small>Insumos abaixo do minimo</small>
+                        </article>
+                    </div>
+
+                    <div class="management-layout">
+                        <section class="manager-panel orders-panel" aria-labelledby="ordersTitle">
+                            <div class="panel-head">
+                                <div>
+                                    <span class="section-kicker">pedidos.queue</span>
+                                    <h2 id="ordersTitle">Pedidos</h2>
+                                </div>
+                                <button class="button secondary compact-button" type="button" id="seedOrderButton">Pedido teste</button>
+                            </div>
+                            <div class="order-board" id="orderBoard"></div>
+                        </section>
+
+                        <aside class="manager-stack">
+                            <section class="manager-panel" aria-labelledby="tablesTitle">
+                                <div class="panel-head">
+                                    <div>
+                                        <span class="section-kicker">salao.mesas</span>
+                                        <h2 id="tablesTitle">Mesas</h2>
+                                    </div>
+                                </div>
+                                <div class="tables-grid" id="tablesGrid"></div>
+                            </section>
+
+                            <section class="manager-panel" aria-labelledby="reservationTitle">
+                                <div class="panel-head">
+                                    <div>
+                                        <span class="section-kicker">agenda.reservas</span>
+                                        <h2 id="reservationTitle">Reservas</h2>
+                                    </div>
+                                </div>
+                                <form class="management-form" id="reservationForm">
+                                    <div class="form-grid">
+                                        <label>
+                                            Nome
+                                            <input type="text" name="name" placeholder="Cliente" required>
+                                        </label>
+                                        <label>
+                                            Pessoas
+                                            <input type="number" name="people" min="1" max="20" value="2" required>
+                                        </label>
+                                    </div>
+                                    <div class="form-grid">
+                                        <label>
+                                            Horario
+                                            <input type="time" name="time" required>
+                                        </label>
+                                        <label>
+                                            Mesa
+                                            <select name="table" id="reservationTable"></select>
+                                        </label>
+                                    </div>
+                                    <button class="button checkout-button" type="submit">Registrar reserva</button>
+                                </form>
+                                <div class="reservation-list" id="reservationList"></div>
+                            </section>
+                        </aside>
+                    </div>
+
+                    <section class="manager-panel inventory-panel" aria-labelledby="inventoryTitle">
+                        <div class="panel-head">
+                            <div>
+                                <span class="section-kicker">estoque.cardapio</span>
+                                <h2 id="inventoryTitle">Estoque e cardapio</h2>
+                            </div>
+                            <button class="button secondary compact-button" type="button" id="restockButton">Repor criticos</button>
+                        </div>
+                        <div class="inventory-table" id="inventoryTable"></div>
+                    </section>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="container footer-row">
+                <a class="brand" href="index.html" aria-label="SushiCode inicio">
+                    <span class="brand-mark">&lt;/&gt;</span>
+                    <span>Sushi<em>Code</em></span>
+                </a>
+                <span>Painel interno do restaurante</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="script.js"></script>
+</body>
+</html>
